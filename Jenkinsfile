@@ -1,9 +1,12 @@
 pipeline{
 agent any
+  environment{
+    New_version="1.2.1"
+  }
   stages{
     stage("build"){
       steps{
-    echo "hello build"
+        echo "hello build version ${New_version}"
     }
     }
     stage("test"){
@@ -12,15 +15,14 @@ agent any
         BRANCH_NAME=="master"
         }
       }
-          steps{
+      steps{
         echo "hello test"
+       /* withCredentials([usernamePassword(credentials: '', passwordVariable: '', usernameVariable: '')]) {
+    // some block
+}*/
         }
   }
   }
-  post{
-    success{
-      mail bcc: '', body: 'test done', cc: '', from: '', replyTo: '', subject: 'build done', to: 'aditya.nagraja1999@gmail.com'
-    }
-  }
+  
     
 }
