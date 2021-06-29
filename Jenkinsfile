@@ -7,9 +7,14 @@ agent any
     }
     }
     stage("test"){
-      steps{
-    echo "hello test"
-    }
+      when {
+        expression{
+        BRANCH_NAME=="master"
+        }
+      }
+          steps{
+        echo "hello test"
+        }
   }
   }
 }
