@@ -1,6 +1,6 @@
+def gvv
 pipeline{
 agent any
-def gvv
   environment{
     New_version="1.2.1"
   }
