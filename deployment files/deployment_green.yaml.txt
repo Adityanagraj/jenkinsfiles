@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dexter-blue
+  namespace: dexter-demo
+  labels: 
+    version: green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dexter-app
+      namespace: dexter-demo
+  template:
+    metadata:
+    labels:
+      app: dexter-app
+      namespace: dexter-demo
+      version: green
+    spec:
+      containers:
+        - name:  dexter-app
+          image: kubernetes/dexter-app:v2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+              initialDelaySeconds: 20
+              periodSeconds: 20
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+              initialDelaySeconds: 5
+              periodSeconds: 10

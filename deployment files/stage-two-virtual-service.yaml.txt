@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: dexter-stage-one
+  namespace: dexter-demo
+spec:
+  gateways:
+  - dexter-app-gateway
+  hosts:
+  - "*"
+  http:
+  - match:
+  - uri:
+      prefix: /dexter
+  route:
+  - destination:
+      host: dexter-app
+      port:
+        number: 8080
+      subset: blue
+    weight: 80
+  - destination:
+      host: dexter-app
+      port:
+        number: 8080
+      subset: green
+    weight: 20 
