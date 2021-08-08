@@ -3,7 +3,7 @@ pipeline{
         label 'slave-helm'
     }
     stages{
-        stage("1"){
+        stage("stage-1"){
             steps{
                 git branch: 'main', url: 'https://github.com/Adityanagraj/jenkinsfiles'
                 sh 'mkdir /home/aditya_n/helm'
@@ -12,7 +12,7 @@ pipeline{
                 
             }
         }
-        stage("2"){
+        stage("stage-2"){
             steps{
                 sh 'helm upgrade myweb /home/aditya_n/helm/myweb'
             }
