@@ -1,0 +1,141 @@
+###NODE_APP_1###
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs #reviews
+  labels:
+    app: nodejs #reviews
+    service: nodejs #reviews
+spec:
+  ports:
+  - port: 80 #9080
+    name: tcp #http
+    protocol: TCP
+  selector:
+    app: nodejs #reviews
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nodejs-service #bookinfo-reviews
+  labels:
+    account: nodejs #reviews
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-v1 #reviews-v1
+  labels:
+    app: nodejs #reviews
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs #reviews
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: nodejs #reviews
+        version: v1
+    spec:
+      serviceAccountName: nodejs-service #bookinfo-reviews
+      containers:
+      - name: nodejs #reviews
+        image: gcr.io/adroit-gravity-319013/httpdtest:latest #docker.io/istio/examples-bookinfo-reviews-v1:1.16.2
+        imagePullPolicy: always #IfNotPresent
+        ports:
+        - containerPort: 80 #9080
+        
+      
+---
+
+###NODE_APP_2###
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-v2 #reviews-v2
+  labels:
+    app: nodejs #reviews
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs #reviews
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: nodejs #reviews
+        version: v2
+    spec:
+      serviceAccountName: nodejs-service #bookinfo-reviews
+      containers:
+      - name: nodejs #reviews
+        image: nginx #docker.io/istio/examples-bookinfo-reviews-v2:1.16.2
+        imagePullPolicy: always #IfNotPresent
+        ports:
+        - containerPort: 80
+        
+
+###ISTIO_MESH###
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: nodejs-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: nodejs #bookinfo
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - nodejs-gateway #bookinfo-gateway
+  http:
+  - route:
+    - destination:
+        host: nodejs #productpage
+        port:
+          number: 80
+        subset: v1
+      weight: 10
+    - destination:
+        host: nodejs #productpage
+        port:
+          number: 80
+        subset: v2
+      weight: 90
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: nodejs #productpage
+spec:
+  host: nodejs #productpage
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+
