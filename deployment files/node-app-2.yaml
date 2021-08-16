@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-v2
+  labels:
+    app: nodejs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: nodejs
+        image: vimal13/apache-webserver-php
+        ports:
+        - containerPort: 9080
+        resources:
+          limits:
+            cpu: 200m
+            memory: 0.5Gi
+          requests:
+            cpu: 100m
+            memory: 0.25Gi
