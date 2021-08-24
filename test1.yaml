@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dexter-v1 #reviews-v1
+  name: 
   #namespace: dev-dexter
   labels:
     app: dexter #reviews
-    version: v1
+    version: 
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: dexter #reviews
-      version: v1
+      version: 
   template:
     metadata:
       labels:
         app: dexter #reviews
-        version: v1
+        version: 
     spec:
       serviceAccountName: dexter-service #bookinfo-reviews
       containers:
       - name: dexter #reviews
-        image: nginx #gcr.io/qp-dexter-2021-05/front_end:latest #docker.io/istio/examples-bookinfo-reviews-v1:1.16.2
+        image: 
         imagePullPolicy: Always #IfNotPresent
         ports:
         - containerPort: 80 #9080
